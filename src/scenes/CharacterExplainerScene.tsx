@@ -1,6 +1,7 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { calmWrite, popBigger, slideIn } from "./animationStyles";
 import { SceneComponentProps } from "./SceneComponentProps";
+import { fitFont, safeContentWidth, wrapStyle } from "./textFit";
 import { theme } from "./theme";
 import { getVisualIntensity } from "./visualIntensity";
 
@@ -9,7 +10,7 @@ export const CharacterExplainerScene: React.FC<SceneComponentProps> = ({
   classification,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width: canvasWidth } = useVideoConfig();
   const intensity = getVisualIntensity(classification);
   const isThoughtful = classification.tone === "thoughtful";
 
@@ -30,11 +31,19 @@ export const CharacterExplainerScene: React.FC<SceneComponentProps> = ({
       })
     : { opacity: 1, translateY: 0 };
 
-  // Bob amplitude grows for happy/excited tones, shrinks for thoughtful
-  const bobAmp = isThoughtful ? 4 : classification.tone === "happy" || classification.tone === "excited" ? 14 : 8;
+  const bobAmp = isThoughtful ? 3 : classification.tone === "happy" || classification.tone === "excited" ? 9 : 6;
   const bob = Math.sin(frame / (isThoughtful ? 18 : 12)) * bobAmp;
 
-  const titleSize = 64 * intensity.fontScale;
+  // Character SVG sized for 720p (was 420 wide for 1080p)
+  const charWidth = 260;
+  const charHeight = 320;
+  const safeMax = safeContentWidth(canvasWidth, theme.spacing.pagePadding);
+  const bubbleMax = Math.max(360, safeMax - charWidth - 60);
+
+  const titleSize = fitFont(props.title, 44 * intensity.fontScale, {
+    comfortableChars: 28,
+    minScale: 0.6,
+  });
   const bodySize = theme.font.bodySize * intensity.fontScale;
 
   return (
@@ -46,7 +55,7 @@ export const CharacterExplainerScene: React.FC<SceneComponentProps> = ({
         color: theme.colors.ink,
         flexDirection: "row",
         alignItems: "center",
-        gap: 80,
+        gap: 40,
       }}
     >
       <div
@@ -56,7 +65,7 @@ export const CharacterExplainerScene: React.FC<SceneComponentProps> = ({
           flexShrink: 0,
         }}
       >
-        <svg width={420} height={520} viewBox="0 0 200 240">
+        <svg width={charWidth} height={charHeight} viewBox="0 0 200 240">
           <ellipse cx="100" cy="220" rx="70" ry="10" fill="rgba(0,0,0,0.1)" />
           <rect x="55" y="110" width="90" height="100" rx="20" fill={intensity.accent.primary} />
           <circle cx="100" cy="70" r="50" fill="#FCD7B6" />
@@ -80,12 +89,12 @@ export const CharacterExplainerScene: React.FC<SceneComponentProps> = ({
       <div
         style={{
           background: "#FFFFFF",
-          borderRadius: 40,
-          padding: 60 + intensity.paddingBoost * 2,
-          boxShadow: "0 20px 60px rgba(0,0,0,0.08)",
+          borderRadius: 28,
+          padding: 32 + intensity.paddingBoost * 2,
+          boxShadow: "0 16px 40px rgba(0,0,0,0.08)",
           opacity: bubbleEntry.opacity,
           transform: `translateX(${bubbleEntry.translateX}px)`,
-          maxWidth: 1100,
+          maxWidth: bubbleMax,
           position: "relative",
           borderLeft: `${intensity.borderWidth}px solid ${intensity.accent.primary}`,
         }}
@@ -93,13 +102,13 @@ export const CharacterExplainerScene: React.FC<SceneComponentProps> = ({
         <div
           style={{
             position: "absolute",
-            left: -30,
-            top: 80,
+            left: -22,
+            top: 60,
             width: 0,
             height: 0,
-            borderTop: "20px solid transparent",
-            borderBottom: "20px solid transparent",
-            borderRight: "30px solid #FFFFFF",
+            borderTop: "16px solid transparent",
+            borderBottom: "16px solid transparent",
+            borderRight: "22px solid #FFFFFF",
           }}
         />
         {props.title && (
@@ -107,8 +116,9 @@ export const CharacterExplainerScene: React.FC<SceneComponentProps> = ({
             style={{
               fontSize: titleSize,
               fontWeight: 800 + intensity.weightBoost,
-              marginBottom: 20,
+              marginBottom: 12,
               color: intensity.accent.textColor ?? theme.colors.ink,
+              ...wrapStyle,
             }}
           >
             {props.title}
@@ -120,6 +130,7 @@ export const CharacterExplainerScene: React.FC<SceneComponentProps> = ({
             lineHeight: 1.4,
             opacity: bodyAnim.opacity,
             transform: `translateY(${bodyAnim.translateY}px)`,
+            ...wrapStyle,
           }}
         >
           {props.body}

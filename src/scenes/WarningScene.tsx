@@ -1,12 +1,13 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { fadeIn, popBigger, seriousWarning, shakeEmphasis } from "./animationStyles";
 import { SceneComponentProps } from "./SceneComponentProps";
+import { fitFont, safeContentWidth, wrapStyle } from "./textFit";
 import { theme } from "./theme";
 import { getVisualIntensity } from "./visualIntensity";
 
 export const WarningScene: React.FC<SceneComponentProps> = ({ props, classification }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width: canvasWidth } = useVideoConfig();
   const intensity = getVisualIntensity(classification);
 
   const iconPop = popBigger({ frame, fps, intensity: intensity.motionScale });
@@ -30,7 +31,13 @@ export const WarningScene: React.FC<SceneComponentProps> = ({ props, classificat
     durationFrames: Math.round(fps * 0.6 * intensity.pace),
   });
 
-  const titleSize = theme.font.titleSize * intensity.fontScale;
+  const safeMax = safeContentWidth(canvasWidth, theme.spacing.pagePadding);
+  const baseTitleSize = theme.font.titleSize * intensity.fontScale;
+  // Uppercase chars are wider, so apply slightly tighter comfortable threshold
+  const titleSize = fitFont(props.title, baseTitleSize, {
+    comfortableChars: 22,
+    minScale: 0.55,
+  });
   const bodySize = theme.font.bodySize * intensity.fontScale;
   const fontWeight = 900 + intensity.weightBoost;
 
@@ -50,9 +57,9 @@ export const WarningScene: React.FC<SceneComponentProps> = ({ props, classificat
       <div
         style={{
           position: "absolute",
-          inset: 60,
+          inset: 36,
           border: `${intensity.borderWidth + 2}px solid ${intensity.accent.primary}`,
-          borderRadius: 36,
+          borderRadius: 28,
           opacity: pulse.pulseAlpha * 0.6,
           transform: `scale(${pulse.scale})`,
           pointerEvents: "none",
@@ -65,7 +72,7 @@ export const WarningScene: React.FC<SceneComponentProps> = ({ props, classificat
           opacity: iconPop.opacity,
         }}
       >
-        <svg width={220} height={220} viewBox="0 0 100 100">
+        <svg width={140} height={140} viewBox="0 0 100 100">
           <path
             d="M50 10 L95 90 L5 90 Z"
             fill={intensity.accent.primary}
@@ -80,14 +87,17 @@ export const WarningScene: React.FC<SceneComponentProps> = ({ props, classificat
 
       <div
         style={{
-          marginTop: 40,
+          marginTop: 24,
           fontSize: titleSize,
           fontWeight,
-          letterSpacing: -2,
+          letterSpacing: -1,
           color: intensity.accent.textColor ?? theme.colors.danger,
           textTransform: "uppercase",
           transform: `scale(${titleAnim.scale}) translateX(${shake.translateX * 0.4}px)`,
           opacity: titleAnim.opacity,
+          maxWidth: safeMax,
+          lineHeight: 1.1,
+          ...wrapStyle,
         }}
       >
         {props.title ?? "Watch Out"}
@@ -95,13 +105,14 @@ export const WarningScene: React.FC<SceneComponentProps> = ({ props, classificat
 
       <div
         style={{
-          marginTop: 30,
+          marginTop: 18,
           fontSize: bodySize,
           lineHeight: 1.4,
           opacity: bodyAnim.opacity,
           transform: `translateY(${bodyAnim.translateY}px)`,
-          maxWidth: 1400,
+          maxWidth: safeMax,
           color: intensity.accent.textColor ?? theme.colors.ink,
+          ...wrapStyle,
         }}
       >
         {props.body}

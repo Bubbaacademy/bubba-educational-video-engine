@@ -1,12 +1,13 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { fadeIn, highlightReveal, popBigger } from "./animationStyles";
 import { SceneComponentProps } from "./SceneComponentProps";
+import { fitFont, safeContentWidth, wrapStyle } from "./textFit";
 import { theme } from "./theme";
 import { getVisualIntensity } from "./visualIntensity";
 
 export const TextOnScreenScene: React.FC<SceneComponentProps> = ({ props, classification }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width: canvasWidth } = useVideoConfig();
   const intensity = getVisualIntensity(classification);
   const isHighlight = classification.emphasis === "high";
 
@@ -24,7 +25,10 @@ export const TextOnScreenScene: React.FC<SceneComponentProps> = ({ props, classi
     durationFrames: Math.round(fps * 0.6 * intensity.pace),
   });
 
-  const titleSize = theme.font.titleSize * 1.2 * intensity.fontScale;
+  const titleText = props.title ?? props.body ?? "";
+  const safeMax = safeContentWidth(canvasWidth, theme.spacing.pagePadding);
+  const baseTitleSize = theme.font.titleSize * 1.15 * intensity.fontScale;
+  const titleSize = fitFont(titleText, baseTitleSize, { comfortableChars: 26, minScale: 0.55 });
   const fontWeight = 900 + intensity.weightBoost;
 
   return (
@@ -39,17 +43,17 @@ export const TextOnScreenScene: React.FC<SceneComponentProps> = ({ props, classi
         textAlign: "center",
       }}
     >
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div style={{ position: "relative", display: "inline-block", maxWidth: safeMax }}>
         {isHighlight && (
           <div
             style={{
               position: "absolute",
-              left: -16,
-              right: -16,
-              bottom: 6,
-              height: titleSize * 0.42,
+              left: -10,
+              right: -10,
+              bottom: 4,
+              height: titleSize * 0.4,
               background: intensity.accent.soft,
-              borderRadius: 12,
+              borderRadius: 10,
               transform: `scaleX(${highlight.widthPct / 100})`,
               transformOrigin: "left",
               opacity: highlight.opacity,
@@ -63,26 +67,29 @@ export const TextOnScreenScene: React.FC<SceneComponentProps> = ({ props, classi
             zIndex: 1,
             fontSize: titleSize,
             fontWeight,
-            letterSpacing: -3,
+            letterSpacing: -2,
             color: intensity.accent.primary,
             transform: `scale(${titleAnim.scale})`,
             opacity: titleAnim.opacity,
+            lineHeight: 1.15,
+            ...wrapStyle,
           }}
         >
-          {props.title ?? props.body}
+          {titleText}
         </div>
       </div>
 
       {props.body && props.title && (
         <div
           style={{
-            marginTop: 40,
+            marginTop: 28,
             fontSize: theme.font.bodySize * intensity.fontScale,
             lineHeight: 1.4,
             opacity: bodyAnim.opacity,
             transform: `translateY(${bodyAnim.translateY}px)`,
-            maxWidth: 1400,
+            maxWidth: safeMax,
             color: theme.colors.muted,
+            ...wrapStyle,
           }}
         >
           {props.body}

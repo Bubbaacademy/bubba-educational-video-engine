@@ -13,11 +13,12 @@ export const theme = {
   font: {
     family:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-    titleSize: 96,
-    bodySize: 52,
-    itemSize: 48,
+    // Sized for 1280x720. Scenes may multiply these and apply intensity.fontScale.
+    titleSize: 64,
+    bodySize: 34,
+    itemSize: 36,
   },
   spacing: {
-    pagePadding: 120,
+    pagePadding: 70,
   },
 };

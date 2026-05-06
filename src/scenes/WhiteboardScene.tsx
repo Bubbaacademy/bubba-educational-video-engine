@@ -1,12 +1,13 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { calmWrite, handDraw } from "./animationStyles";
 import { SceneComponentProps } from "./SceneComponentProps";
+import { fitFont, safeContentWidth, wrapStyle } from "./textFit";
 import { theme } from "./theme";
 import { getVisualIntensity } from "./visualIntensity";
 
 export const WhiteboardScene: React.FC<SceneComponentProps> = ({ props, classification }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width: canvasWidth } = useVideoConfig();
   const intensity = getVisualIntensity(classification);
 
   const titleAnim = handDraw({
@@ -28,7 +29,12 @@ export const WhiteboardScene: React.FC<SceneComponentProps> = ({ props, classifi
     intensity: intensity.motionScale,
   });
 
-  const titleSize = theme.font.titleSize * intensity.fontScale;
+  const safeMax = safeContentWidth(canvasWidth, theme.spacing.pagePadding);
+  const titleSize = fitFont(
+    props.title,
+    theme.font.titleSize * intensity.fontScale,
+    { comfortableChars: 30, minScale: 0.55 },
+  );
   const fontWeight = 800 + intensity.weightBoost;
 
   return (
@@ -36,7 +42,7 @@ export const WhiteboardScene: React.FC<SceneComponentProps> = ({ props, classifi
       style={{
         background: "#FFFFFF",
         backgroundImage:
-          "repeating-linear-gradient(0deg, #F3F4F6 0px, #F3F4F6 1px, transparent 1px, transparent 80px), repeating-linear-gradient(90deg, #F3F4F6 0px, #F3F4F6 1px, transparent 1px, transparent 80px)",
+          "repeating-linear-gradient(0deg, #F3F4F6 0px, #F3F4F6 1px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, #F3F4F6 0px, #F3F4F6 1px, transparent 1px, transparent 60px)",
         padding: theme.spacing.pagePadding,
         fontFamily: theme.font.family,
         color: theme.colors.ink,
@@ -46,10 +52,12 @@ export const WhiteboardScene: React.FC<SceneComponentProps> = ({ props, classifi
         style={{
           fontSize: titleSize,
           fontWeight,
-          letterSpacing: -2,
+          letterSpacing: -1,
           opacity: titleAnim.opacity,
-          transform: `translateY(${(1 - titleAnim.opacity) * 20}px)`,
+          transform: `translateY(${(1 - titleAnim.opacity) * 16}px)`,
           color: intensity.accent.textColor ?? theme.colors.ink,
+          maxWidth: safeMax,
+          ...wrapStyle,
         }}
       >
         {props.title ?? "Whiteboard"}
@@ -57,9 +65,10 @@ export const WhiteboardScene: React.FC<SceneComponentProps> = ({ props, classifi
 
       <div
         style={{
-          marginTop: 24,
-          height: intensity.borderWidth + 2,
+          marginTop: 16,
+          height: intensity.borderWidth + 1,
           width: `${underline.scaleX * 100}%`,
+          maxWidth: safeMax,
           background: intensity.accent.primary,
           borderRadius: 3,
           transformOrigin: "left",
@@ -68,12 +77,13 @@ export const WhiteboardScene: React.FC<SceneComponentProps> = ({ props, classifi
 
       <div
         style={{
-          marginTop: 60,
+          marginTop: 36,
           fontSize: theme.font.bodySize * intensity.fontScale,
           lineHeight: 1.4,
           opacity: body.opacity,
           transform: `translateY(${body.translateY}px)`,
-          maxWidth: "85%",
+          maxWidth: safeMax,
+          ...wrapStyle,
         }}
       >
         {props.body}

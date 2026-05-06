@@ -75,5 +75,7 @@ export interface ScenePlan {
 }
 
 export const VIDEO_FPS = 30;
-export const VIDEO_WIDTH = 1920;
-export const VIDEO_HEIGHT = 1080;
+// 720p default keeps Remotion + Chromium under Render starter's 512MB RAM ceiling.
+// Bump to 1920x1080 once the host has more headroom (Standard plan = 2GB).
+export const VIDEO_WIDTH = 1280;
+export const VIDEO_HEIGHT = 720;

@@ -1,12 +1,13 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { calmWrite, fadeIn, popBigger } from "./animationStyles";
 import { SceneComponentProps } from "./SceneComponentProps";
+import { fitFont, safeContentWidth, wrapStyle } from "./textFit";
 import { theme } from "./theme";
 import { getVisualIntensity } from "./visualIntensity";
 
 export const TitleScene: React.FC<SceneComponentProps> = ({ props, classification }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width: canvasWidth } = useVideoConfig();
   const intensity = getVisualIntensity(classification);
 
   const titleAnim = popBigger({ frame, fps, intensity: intensity.motionScale });
@@ -18,9 +19,12 @@ export const TitleScene: React.FC<SceneComponentProps> = ({ props, classificatio
     durationFrames: Math.round(fps * 1.2 * intensity.pace),
   });
 
-  const titleSize = theme.font.titleSize * 1.6 * intensity.fontScale;
+  const titleText = props.title ?? props.body ?? "Bubba Academy";
+  const safeMax = safeContentWidth(canvasWidth, theme.spacing.pagePadding);
+  const baseTitleSize = theme.font.titleSize * 1.6 * intensity.fontScale;
+  const titleSize = fitFont(titleText, baseTitleSize, { comfortableChars: 24, minScale: 0.5 });
   const fontWeight = 800 + intensity.weightBoost;
-  const accentBarWidth = 160 + intensity.paddingBoost * 8;
+  const accentBarWidth = 120 + intensity.paddingBoost * 6;
 
   return (
     <AbsoluteFill
@@ -37,12 +41,12 @@ export const TitleScene: React.FC<SceneComponentProps> = ({ props, classificatio
       <div
         style={{
           width: accentBarWidth,
-          height: 12 + intensity.paddingBoost,
+          height: 8 + intensity.paddingBoost,
           borderRadius: 6,
           background: intensity.accent.primary,
           opacity: accentAnim.opacity,
           transform: `scaleX(${accentAnim.opacity})`,
-          marginBottom: 60,
+          marginBottom: 36,
         }}
       />
 
@@ -50,27 +54,29 @@ export const TitleScene: React.FC<SceneComponentProps> = ({ props, classificatio
         style={{
           fontSize: titleSize,
           fontWeight,
-          letterSpacing: -4,
+          letterSpacing: -2,
           color: theme.colors.ink,
           transform: `scale(${titleAnim.scale})`,
           opacity: titleAnim.opacity,
-          maxWidth: 1600,
-          lineHeight: 1.05,
+          maxWidth: safeMax,
+          lineHeight: 1.1,
+          ...wrapStyle,
         }}
       >
-        {props.title ?? props.body ?? "Bubba Academy"}
+        {titleText}
       </div>
 
       {props.body && props.title && (
         <div
           style={{
-            marginTop: 40,
-            fontSize: theme.font.bodySize * 0.85 * intensity.fontScale,
+            marginTop: 28,
+            fontSize: theme.font.bodySize * 0.95 * intensity.fontScale,
             color: intensity.accent.textColor ?? theme.colors.muted,
             opacity: subtitle.opacity,
             transform: `translateY(${subtitle.translateY}px)`,
-            maxWidth: 1200,
+            maxWidth: safeMax,
             lineHeight: 1.4,
+            ...wrapStyle,
           }}
         >
           {props.body}

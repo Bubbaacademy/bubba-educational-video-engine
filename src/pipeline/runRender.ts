@@ -27,6 +27,7 @@ export interface RunRenderResult {
   videoPath?: string;
   durationMs: number;
   scenes: number;
+  audioDurationSeconds: number;
 }
 
 const defaultLog = (step: string, msg: string) => process.stdout.write(`[${step}] ${msg}\n`);
@@ -89,7 +90,12 @@ export async function runRender(opts: RunRenderOptions = {}): Promise<RunRenderR
   log("plan", `Wrote ${planPath}`);
 
   if (opts.planOnly) {
-    return { planPath, durationMs: Date.now() - startTime, scenes: plan.scenes.length };
+    return {
+      planPath,
+      durationMs: Date.now() - startTime,
+      scenes: plan.scenes.length,
+      audioDurationSeconds: plan.audioDurationSeconds,
+    };
   }
 
   log("bundle", `Bundling Remotion project`);
@@ -135,5 +141,6 @@ export async function runRender(opts: RunRenderOptions = {}): Promise<RunRenderR
     videoPath,
     durationMs: Date.now() - startTime,
     scenes: plan.scenes.length,
+    audioDurationSeconds: plan.audioDurationSeconds,
   };
 }
