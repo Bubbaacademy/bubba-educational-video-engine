@@ -14,13 +14,13 @@
     "prepare-sample-audio": "ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=stereo -t 60 -q:a 9 -acodec libmp3lame inputs/voiceover.mp3"
   },
   "dependencies": {
-    "@remotion/bundler": "4.0.190",
-    "@remotion/cli": "4.0.190",
-    "@remotion/renderer": "4.0.190",
+    "@remotion/bundler": "4.0.457",
+    "@remotion/cli": "4.0.457",
+    "@remotion/renderer": "4.0.457",
     "express": "4.21.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "remotion": "4.0.190",
+    "remotion": "4.0.457",
     "tsx": "4.19.0"
   },
   "devDependencies": {
