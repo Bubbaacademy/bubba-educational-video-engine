@@ -1,7 +1,7 @@
 {
   "fps": 30,
-  "width": 1920,
-  "height": 1080,
+  "width": 1280,
+  "height": 720,
   "audioPath": "voiceover.mp3",
   "audioDurationSeconds": 40,
   "totalFrames": 1200,

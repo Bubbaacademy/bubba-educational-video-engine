@@ -127,6 +127,7 @@ export async function runRender(opts: RunRenderOptions = {}): Promise<RunRenderR
     timeoutInMilliseconds: RENDER_TIMEOUT_MS,
     concurrency: RENDER_CONCURRENCY,
     chromiumOptions: CHROMIUM_OPTIONS,
+    jpegQuality: 70,
   });
 
   return {
