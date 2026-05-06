@@ -1,0 +1,35 @@
+{
+  "name": "bubba-educational-video-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Educational video generation engine for Bubba Academy. Turns lesson scripts + ElevenLabs voiceovers into animated educational videos using Remotion + FFmpeg. Deployed as a Render Web Service.",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "start": "tsx src/server/index.ts",
+    "dev": "remotion studio src/index.ts",
+    "render": "tsx cli/render.ts",
+    "render:sample": "tsx cli/render.ts --from-plan samples/scene-plan.example.json",
+    "plan": "tsx cli/render.ts --plan-only",
+    "test:classifier": "tsx cli/test-classifier.ts",
+    "prepare-sample-audio": "ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=stereo -t 60 -q:a 9 -acodec libmp3lame inputs/voiceover.mp3"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.190",
+    "@remotion/cli": "4.0.190",
+    "@remotion/renderer": "4.0.190",
+    "express": "4.21.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.190",
+    "tsx": "4.19.0"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21",
+    "@types/node": "20.12.7",
+    "@types/react": "18.3.3",
+    "typescript": "5.5.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

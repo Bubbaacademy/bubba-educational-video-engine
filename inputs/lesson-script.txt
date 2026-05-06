@@ -1,0 +1,23 @@
+[scene]
+Photosynthesis 101
+
+[scene]
+Welcome to Bubba Academy. Today we're going to explore how plants turn sunlight into food.
+
+[scene]
+Photosynthesis is the process plants use to convert light energy into chemical energy.
+
+[scene title="Plants need four things" items="Sunlight,Water,Carbon Dioxide,Chlorophyll"]
+For photosynthesis to happen, a plant needs all four of these ingredients working together.
+
+[scene title="The Process" nodes="CO2 + H2O,Chloroplast,Glucose + O2"]
+Plants take in carbon dioxide and water, transform them inside the chloroplast using sunlight, and produce glucose and oxygen.
+
+[scene]
+The most important thing to remember is that sunlight is the energy source — without it, the entire process stops.
+
+[scene]
+[warning] Do not assume plants only photosynthesize. At night they also respire — taking in oxygen and releasing carbon dioxide, just like animals.
+
+[scene]
+[happy] Great work! You now understand the basics of photosynthesis.

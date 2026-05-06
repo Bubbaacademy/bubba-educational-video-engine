@@ -1,0 +1,122 @@
+{
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "audioPath": "voiceover.mp3",
+  "audioDurationSeconds": 40,
+  "totalFrames": 1200,
+  "scenes": [
+    {
+      "id": "scene_1",
+      "type": "title",
+      "weight": 1,
+      "props": {
+        "title": "Lesson 4: Reviews That Convert",
+        "body": "How to earn product reviews the right way."
+      },
+      "classification": {
+        "sceneType": "title",
+        "tone": "neutral",
+        "emphasis": "high",
+        "animationStyle": "pop_bigger",
+        "confidence": 1.0,
+        "matchedRule": "title.lesson_intro"
+      },
+      "start": 0,
+      "duration": 180,
+      "startSeconds": 0,
+      "durationSeconds": 6
+    },
+    {
+      "id": "scene_2",
+      "type": "checklist",
+      "weight": 4,
+      "props": {
+        "title": "What earns a great review",
+        "items": [
+          "Ship a product that exceeds expectations",
+          "Follow up with a thoughtful email",
+          "Make support easy and fast",
+          "Ask at the right moment"
+        ],
+        "body": "Four ingredients consistently move the needle."
+      },
+      "classification": {
+        "sceneType": "checklist",
+        "tone": "educational",
+        "emphasis": "medium",
+        "animationStyle": "hand_draw",
+        "confidence": 0.9,
+        "matchedRule": "attrs:checklist"
+      },
+      "start": 180,
+      "duration": 240,
+      "startSeconds": 6,
+      "durationSeconds": 8
+    },
+    {
+      "id": "scene_3",
+      "type": "warning",
+      "weight": 4,
+      "props": {
+        "title": "Never buy reviews",
+        "body": "Paid or fake reviews violate Amazon policy and can get your account suspended permanently."
+      },
+      "classification": {
+        "sceneType": "warning",
+        "tone": "serious",
+        "emphasis": "high",
+        "animationStyle": "shake_emphasis",
+        "confidence": 0.95,
+        "matchedRule": "warning.dont"
+      },
+      "start": 420,
+      "duration": 240,
+      "startSeconds": 14,
+      "durationSeconds": 8
+    },
+    {
+      "id": "scene_4",
+      "type": "text",
+      "weight": 4,
+      "props": {
+        "title": "Timing is everything",
+        "body": "It is critical to ask within 7 days of delivery — engagement drops sharply after that."
+      },
+      "classification": {
+        "sceneType": "text",
+        "tone": "serious",
+        "emphasis": "high",
+        "animationStyle": "highlight_reveal",
+        "confidence": 0.85,
+        "matchedRule": "text.important"
+      },
+      "start": 660,
+      "duration": 240,
+      "startSeconds": 22,
+      "durationSeconds": 8
+    },
+    {
+      "id": "scene_5",
+      "type": "diagram",
+      "weight": 5,
+      "props": {
+        "title": "The review flywheel",
+        "nodes": ["Great product", "Happy buyer", "Review", "More sales"],
+        "body": "Each review fuels the next round of buyers."
+      },
+      "classification": {
+        "sceneType": "diagram",
+        "tone": "educational",
+        "emphasis": "medium",
+        "animationStyle": "slide_in",
+        "confidence": 0.85,
+        "matchedRule": "diagram.flow"
+      },
+      "start": 900,
+      "duration": 300,
+      "startSeconds": 30,
+      "durationSeconds": 10
+    }
+  ]
+}

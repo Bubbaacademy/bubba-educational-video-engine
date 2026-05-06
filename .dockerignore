@@ -1,0 +1,9 @@
+node_modules
+outputs
+.DS_Store
+.git
+.gitignore
+.remotion
+dist
+*.log
+inputs/voiceover.mp3

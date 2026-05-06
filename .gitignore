@@ -1,0 +1,8 @@
+node_modules
+outputs/*.mp4
+outputs/*.json
+inputs/voiceover.mp3
+.DS_Store
+.remotion
+dist
+*.log

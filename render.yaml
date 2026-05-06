@@ -1,0 +1,20 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy with: connect this repo to Render → New + → Blueprint → select repo.
+services:
+  - type: web
+    name: bubba-educational-video-engine
+    env: docker
+    plan: starter            # 'free' also works, but free instances spin down after 15min idle
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+    # Uncomment to persist outputs/ across deploys (paid plans only).
+    # disk:
+    #   name: bubba-outputs
+    #   mountPath: /app/outputs
+    #   sizeGB: 1
