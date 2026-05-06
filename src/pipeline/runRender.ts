@@ -95,11 +95,21 @@ export async function runRender(opts: RunRenderOptions = {}): Promise<RunRenderR
   log("bundle", `Bundling Remotion project`);
   const bundleLocation = await bundle({ entryPoint, publicDir });
 
+  // Tunings for resource-constrained hosts (Render starter = 512MB RAM):
+  // - timeoutInMilliseconds: 120s page-render timeout (default 33s is too tight on cold container)
+  // - concurrency: 1 to keep memory in budget
+  // - chromiumOptions.gl: 'swiftshader' avoids GPU init wait in headless Linux
+  const RENDER_TIMEOUT_MS = 120_000;
+  const RENDER_CONCURRENCY = 1;
+  const CHROMIUM_OPTIONS = { gl: "swiftshader" as const };
+
   log("compose", `Selecting composition`);
   const composition = await selectComposition({
     serveUrl: bundleLocation,
     id: "EducationalVideo",
     inputProps: { plan },
+    timeoutInMilliseconds: RENDER_TIMEOUT_MS,
+    chromiumOptions: CHROMIUM_OPTIONS,
   });
 
   log(
@@ -114,6 +124,9 @@ export async function runRender(opts: RunRenderOptions = {}): Promise<RunRenderR
     codec: "h264",
     outputLocation: videoPath,
     inputProps: { plan },
+    timeoutInMilliseconds: RENDER_TIMEOUT_MS,
+    concurrency: RENDER_CONCURRENCY,
+    chromiumOptions: CHROMIUM_OPTIONS,
   });
 
   return {
