@@ -2,9 +2,12 @@ import { AbsoluteFill, Audio, Sequence, staticFile } from "remotion";
 import { SceneRenderer } from "../scenes/SceneRenderer";
 import { ScenePlan } from "../types";
 
-export interface EducationalVideoProps {
+// `type` (not `interface`) so the props satisfy Remotion 4's
+// `Record<string, unknown>` constraint on Composition / CalculateMetadataFunction.
+// Interfaces are "open" and don't auto-satisfy index signatures.
+export type EducationalVideoProps = {
   plan: ScenePlan;
-}
+};
 
 export const EducationalVideo: React.FC<EducationalVideoProps> = ({ plan }) => {
   const audioSrc = plan.audioPath.startsWith("http")
